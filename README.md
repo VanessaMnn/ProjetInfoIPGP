@@ -10,7 +10,7 @@ Le logiciel utilise une architecture **MVC** (Modèle, Vue, Contrôleur) et impl
 
 ### Prérequis
 
-Pour faire fonctionner ce projet en local, tu auras besoin des librairies suivantes :
+Pour faire fonctionner ce projet en local, vous aurez besoin des librairies suivantes :
 
 - **PyQt5** : Pour l'interface graphique.
 - **PyQtWebEngine** : Pour intégrer des fonctionnalités Web dans l'interface graphique.
@@ -18,10 +18,10 @@ Pour faire fonctionner ce projet en local, tu auras besoin des librairies suivan
 
 ### Cloner le projet
 
-Tu peux cloner ce projet en utilisant `git` :
+Vous pouvez cloner ce projet en utilisant `git` :
 
 ```bash
-git clone https://github.com/ton-utilisateur/nom-du-projet.git
+git clone https://github.com/ton-utilisateur/nom-du-projet.git](https://github.com/VanessaMnn/ProjetInfoIPGP.git
 cd nom-du-projet
 ```
 
@@ -35,7 +35,7 @@ pip install folium
 
 ## Usage
 
-Une fois les dépendances installées, tu peux démarrer l'application avec la commande suivante :
+Une fois les dépendances installées, vous pouvez démarrer l'application avec la commande suivante :
 
 ```bash
 python Runclasse.py
