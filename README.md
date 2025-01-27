@@ -6,6 +6,13 @@ Ce projet consiste à développer un logiciel de visualisation des résidus de t
 
 Le logiciel utilise une architecture **MVC** (Modèle, Vue, Contrôleur) et implémente divers design patterns tels que **Strategy**, **Factory**, et **Observer**. Cette architecture a pour but de rendre le projet accessible et facile à prendre en main, afin de permettre à un futur étudiant de continuer le développement de l'outil sans difficulté.
 
+#Description des fichiers présents dans le dépot Git
+
+- **Controlleur.py, Modele.py, View.py** : Ce sont les trois fichiers de l'architecture MVC qui constitue le corps de l'architecture du code.
+- **Runclasse.py** : Fichier qu'il faut exécuter pour le lancement du logiciel.
+- **index.html** : Documentation complète de tous les fichiers python réalisée avec la librairie **pdoc**.
+- **Documentation_développeur.ipynb** et **Documentation_utilisateur.ipynb** : JupyterNotebook créant une documentation pour le développeur en décrivant certaines fonctions pour observer précisément leur sortie, et une documentation utilisateur pour lui indiquer comment installer et mettre en marche le projet. Ces deux fichiers se répètent avec le fichier **index.html** et **readme** mais sont une demande spécifique des commanditaires.
+
 ## Installation
 
 ### Prérequis
