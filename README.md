@@ -47,9 +47,3 @@ Développé par Vanessa Monnier
 Date de début du projet : novembre 2024
 
 ```
-
-### Vérification rapide :
-1. **Vérifie les liens** comme ceux vers le fichier `LICENSE` (assure-toi que ce fichier existe dans ton projet si tu mentionnes cela).
-2. **Mets à jour** ton propre nom et d'autres détails personnalisés.
-
-Une fois que tu as copié ce texte dans ton fichier `README.md` sur GitHub, tu verras que la syntaxe est bien prise en charge et le fichier sera lisible et bien formaté.
