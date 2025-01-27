@@ -8,7 +8,7 @@
 
 from Modele import Modele
 import View
-from View import fenetre_Skyplot, Skyplot
+from View import fenetre_Skyplot, Skyplot, FenetreAide
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QToolBar, QLabel, QAction, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QCheckBox, QScrollArea, QListWidget, QListWidgetItem, QAbstractItemView, QMenu
 import time
 import folium
@@ -75,6 +75,11 @@ class Controleur:
         restart_action.triggered.connect(self.redemarrer_appli)
         self.vue.tool_bar.addAction(restart_action)
 
+        #Bouton Aide utilisateur
+        bouton_aide = QAction("Aide Utilisateur", self.vue)
+        bouton_aide.triggered.connect(self.ouvrir_fenetre_aide)
+        self.vue.tool_bar.addAction(bouton_aide)
+
     def recuperer_donnees_base(self):
         """
         Récupère les informations de base saisies par l'utilisateur dans la fenêtre Skyplot.
@@ -140,6 +145,13 @@ class Controleur:
             self.fenetre_Skyplot = fenetre_Skyplot(self.modele)
 
         self.fenetre_Skyplot.show()
+
+    def ouvrir_fenetre_aide(self):
+        """
+        Ouvre la fenêtre Aide Utilisateur pour permettre à l'utilisateur de savoir comment intéragir avec l'interface si il ne sait pas comment elle fonctionne.
+        """
+        self.fenetre_aide = FenetreAide()
+        self.fenetre_aide.show()
 
 
     def afficher_statistiques(self, event= None):

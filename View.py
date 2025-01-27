@@ -7,7 +7,7 @@
 ##Import des modules-------------------------------------------------------------
 
 from abc import ABC, abstractmethod
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QToolBar, QLabel, QAction, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QCheckBox, QScrollArea, QListWidget, QListWidgetItem, QAbstractItemView, QMessageBox, QFileDialog, QDesktopWidget
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QToolBar, QLabel, QAction, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QCheckBox, QScrollArea, QListWidget, QListWidgetItem, QAbstractItemView, QMessageBox, QFileDialog, QDesktopWidget, QTextBrowser
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 import folium
 from PyQt5.QtCore import QUrl, pyqtSignal, QPoint, Qt
@@ -392,5 +392,38 @@ class CarteMondiale(QMainWindow):
 
 
 
+class FenetreAide(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Aide Utilisateur")
+        self.setGeometry(100, 100, 500, 300)
 
+        # Layout principal
+        layout = QVBoxLayout()
+
+        # Lien vers le dépôt Git
+        label_git = QLabel('<a href="https://github.com/VanessaMnn/ProjetInfoIPGP">Dépôt GitHub : Cliquez ici</a>')
+        label_git.setOpenExternalLinks(True)  # Rend le lien cliquable
+        layout.addWidget(label_git)
+
+        # Explications sur l'interface
+        texte_aide = QTextBrowser()
+        texte_aide.setPlainText(
+            "Bienvenue dans l'application de visualisation des résidus DORIS !\n\n"
+            "Fonctionnalités principales :\n"
+            "- Carte mondiale : affiche les positions géographiques des stations DORIS.\n"
+            "- Skyplot : montre l'évolution des résidus en fonction de l'azimut et de l'élévation pour une/un station /satellite.\n"
+
+            "Boutons disponibles sur le menu :\n"
+            "- Saisie-utilisateur : permet à l'utilisateur de rentrer les informations sur la période de temps, nom du satellite, nom de la station\n"
+            "- Visualisation : contient deux sous-boutons et permet d'afficher les skyplots\n"
+            "- Redémarrer : Permet de redémarrer l'application et de réinitialiser toutes les variables\n\n"
+
+            "Pour plus de détails, visitez le dépôt GitHub via le lien ci-dessus."
+        )
+        texte_aide.setReadOnly(True)
+        layout.addWidget(texte_aide)
+
+        # Appliquer le layout
+        self.setLayout(layout)
 
