@@ -1,3 +1,11 @@
+## ------------------------------------------------------------------------------
+# Auteur : Vanessa Monnier
+# Date de création : 26 Janvier 2025
+# Description : Ce fichier contient des fonctions pour l'affichage du logiciel
+##------------------------------------------------------------------------------
+
+##Import des modules-------------------------------------------------------------
+
 from abc import ABC, abstractmethod
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QToolBar, QLabel, QAction, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QCheckBox, QScrollArea, QListWidget, QListWidgetItem, QAbstractItemView, QMessageBox, QFileDialog, QDesktopWidget
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -5,17 +13,15 @@ import folium
 from PyQt5.QtCore import QUrl, pyqtSignal, QPoint, Qt
 import os
 from PyQt5 import QtCore
-
 from PyQt5.QtCore import Qt, QObject
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-
-from gnss_lib_py.navdata.navdata import NavData
-from gnss_lib_py.visualizations.plot_skyplot import plot_skyplot
-
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+##------------------------------------------------------------------------------
+
 
 # Classe abstraite Vue
 class Vue(ABC):
@@ -41,16 +47,26 @@ class Vue(ABC):
 
 class fenetre_Skyplot(QWidget):
 
+    """
+    Fenêtre permettant de sélectionner une plage de dates, un satellite et les stations au sol pour afficher un skyplot pour un satellite donné.
+    """
+
     stations_selectionnees_signal = pyqtSignal(dict)
+
     def __init__(self, modele):
+
+        """
+        Initialise la fenêtre Skyplot avec les champs nécessaires à la sélection des critères (date, satellite, stations).
+
+        param modele: Modèle de données contenant les informations nécessaires pour afficher le skyplot.
+        """
+
         super().__init__()
         self.modele = modele
         self.setWindowTitle("Skyplot")
         self.setGeometry(200, 200, 400, 300)
-
-        #Contenu de la fenêtre skyplot
-
         layout = QVBoxLayout()
+
         # Champ pour la date de début
         self.debut_label = QLabel("Date de début (YYYY-MM-DD):")
         self.debut_input = QLineEdit()
@@ -78,8 +94,7 @@ class fenetre_Skyplot(QWidget):
         # Sélection des stations au sol
         self.station_label = QLabel("Stations au sol sélectionnées:")
         self.station_list = QListWidget()
-        self.station_list.setSelectionMode(QAbstractItemView.MultiSelection)                        # Permet de sélectionner plusieurs éléments
-
+        self.station_list.setSelectionMode(QAbstractItemView.MultiSelection)
         layout.addWidget(self.station_label)
         layout.addWidget(self.station_list)
 
@@ -93,7 +108,9 @@ class fenetre_Skyplot(QWidget):
 
     def charger_stations(self):
 
-        """Filtre les stations selon les informations saisies."""
+        """"
+        Charge les stations au sol en fonction des critères sélectionnés (date, satellite). Affiche les stations dans une liste si elles sont trouvées.
+        """
         date_debut = self.debut_input.text()
         date_fin = self.fin_input.text()
         satellite = self.satellite_combo.currentText()
@@ -103,7 +120,7 @@ class fenetre_Skyplot(QWidget):
             return
 
         stations = self.modele.obtenir_stations_final_residual(satellite, date_debut, date_fin)
-        print("voici les stations", stations)
+
         if not stations:
             QMessageBox.information(self, "Aucune station", "Aucune station trouvée pour les critères spécifiés.")
             return
@@ -114,14 +131,32 @@ class fenetre_Skyplot(QWidget):
 
 
     def valider(self):
-        """Ferme la fenêtre après validation."""
+
+        """Valide la sélection et ferme la fenêtre après validation des critères."""
 
         self.close()
 
 class Skyplot(QWidget):
 
+    """
+    Classe représentant un skyplot, qui trace les données d'azimut, d'élévation et de résidus pour un satellite et des stations sélectionnées.
+    """
 
     def __init__(self, date_debut, date_fin, satellite, stations_selectionnees, azimut, elevation, residus, couleur):
+
+        """
+        Initialise la fenêtre de skyplot avec les données nécessaires pour tracer le graphique.
+
+        :param date_debut: La date de début de la plage.
+        :param date_fin: La date de fin de la plage.
+        :param satellite: Le satellite sélectionné.
+        :param stations_selectionnees: Liste des stations sélectionnées.
+        :param azimut: Les données d'azimut à afficher.
+        :param elevation: Les données d'élévation à afficher.
+        :param residus: Les données des résidus à afficher.
+        :param couleur: La couleur utilisée pour le style du graphique.
+        """
+
         super().__init__()
         self.setWindowTitle(f"Skyplot pour {satellite}")
         self.setGeometry(200, 200, 800, 600)
@@ -165,10 +200,13 @@ class Skyplot(QWidget):
         layout.addWidget(self.save_button)
 
     def sauvegarder_skyplot(self):
+
         """
-        Sauvegarde le Skyplot en tant qu'image sur le disque.
+        Sauvegarde le skyplot en tant qu'image PNG sur le disque.
+        Ouvre une boîte de dialogue pour sélectionner           l'emplacement et le nom du fichier.
+
         """
-        # Ouvrir une boîte de dialogue pour choisir l'emplacement du fichier
+
         options = QFileDialog.Options()
         file_path, _ = QFileDialog.getSaveFileName(
             self,
@@ -179,41 +217,26 @@ class Skyplot(QWidget):
         )
 
         if file_path:
-            # Sauvegarder le graphique (à adapter selon la bibliothèque utilisée)
-            # Exemple avec Matplotlib :
             self.canvas.print_figure(file_path, dpi=300)
-            print(f"Skyplot sauvegardé dans {file_path}")
+
 
     def tracer_skyplot(self):
 
-        """Trace le graphique du skyplot."""
-
-        #Explication : c'est skyplot avec satellite fixe, qui regarde la station au sol que je souhaite visualiser, celui que j'avais au début c'était skyplot de la station fixe avec le satellite qui bouge au dessus
-
+        """Trace le skyplot en utilisant les données d'azimut, d'élévation et de résidus. La projection est réalisée en utilisant matplotlib avec une vue polaire."""
 
         if self.azimut.empty or self.elevation.empty or self.residus.empty:
             print("Erreur : Les données d'azimut, d'élévation ou de résidus sont vides.")
             return
 
-        print("azimut", self.azimut)
-        print("elevation", self.elevation)
 
-
-        # Convertir les angles en radians
         elevation_rad = np.deg2rad(self.elevation)
         azimut_rad = np.deg2rad(self.azimut)
-
-        print("Longueur Azimut :", len(azimut_rad))
-        print("Longueur Élévation :", len(elevation_rad))
-
-
         ax = self.figure.add_subplot(111, projection='polar')
         sc = ax.scatter(azimut_rad, 90 - self.elevation, c=self.residus, cmap='viridis', s=50)
 
         # Ajouter une barre de couleur
         cbar = plt.colorbar(sc)
-        cbar.set_label('Residus')
-
+        cbar.set_label('Residus en mm')
 
         # Définir le titre et autres propriétés du graphique
         ax.set_title(f"Skyplot pour {self.satellite} et {self.stations_selectionnees} ({self.date_debut} à {self.date_fin})")
@@ -229,19 +252,17 @@ class Skyplot(QWidget):
         self.canvas.draw()
 
 
-
-
-
-
     def afficher(self):
         """Affiche la fenêtre Skyplot."""
         self.show()
 
-# Classe CarteMondiale qui hérite de QWidget
-
 class CarteMondiale(QMainWindow):
 
+    """Classe représentant la carte mondiale sur laquelle les stations au sol sont affichées avec des marqueurs. Permet de visualiser les stations et de modifier leur apparence.
+    """
+
     def __init__(self, controleur=None):
+
         super().__init__()
         self.setWindowTitle("Logiciel de visualisation - Centre d'analyse IGN/IPGP/JPL de l'International Doris Service")
 
@@ -250,9 +271,8 @@ class CarteMondiale(QMainWindow):
         screen_height = screen.height()
 
         self.setGeometry(0, 0, screen_width, screen_height)
-
-
         self.controleur = controleur
+
         # Créer une carte Folium
         self.m = folium.Map(location=[0, 0], zoom_start=2)
         self.carte_path = os.path.join(os.getcwd(), "carte_interactive.html")
@@ -275,25 +295,32 @@ class CarteMondiale(QMainWindow):
         self.addToolBar(self.tool_bar)
 
 
-
-
     def afficher_donnees(self, donnees):
-        """ Afficher les données sur la carte. """
+
+        """
+        Affiche les données sur la carte en ajoutant des stations et en mettant à jour l'interface.
+
+        :param donnees: Les données des stations à afficher.
+        """
         self.afficher_stations(donnees)
         self.browser.setUrl(QUrl.fromLocalFile(self.carte_path))
         self.show()
 
     def afficher_statistiques(self):
+
         """Affiche la fenêtre Statistiques (à implémenter)."""
         print("Statistiques en cours de développement.")
 
 
 
     def afficher_stations(self, stations_df):
-        """Affiche les stations sur la carte en utilisant Folium"""
-        self.m = folium.Map(location=[0, 0], zoom_start=2)  # Réinitialise la carte
 
+        """
+        Affiche les stations au sol sur la carte en utilisant la bibliothèque Folium.
 
+        :param stations_df: DataFrame contenant les informations des stations à afficher.
+        """
+        self.m = folium.Map(location=[0, 0], zoom_start=2)
         self.markers = {}
 
         for _, station in stations_df.iterrows():
@@ -324,28 +351,34 @@ class CarteMondiale(QMainWindow):
         self.browser.setUrl(QUrl.fromLocalFile(self.carte_path))
 
     def generer_couleur(self):
-        # Génère une couleur aléatoire en hexadécimal
+
+        """
+        Génère une couleur aléatoire en format hexadécimal pour un marqueur de station.
+
+        :return: Une couleur hexadécimale sous forme de chaîne de caractères.
+        """
         return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
     def mettre_a_jour_couleur_marqueurs(self, stations_selectionnees):
 
-        """Met à jour la couleur des marqueurs en fonction des stations sélectionnées."""
+        """
+        Met à jour la couleur des marqueurs de stations en fonction des stations sélectionnées.
+
+        :param stations_selectionnees: Liste des stations sélectionnées pour mettre à jour leur couleur.
+        """
 
         self.m = folium.Map(location=[0, 0], zoom_start=2)
-
         couleur_par_station = {station: self.generer_couleur() for station in stations_selectionnees}
-
 
         for station, info in self.markers.items():
 
             couleur = couleur_par_station.get(station, "#3388FF")
-            #là je change les marqueurs pour des cercles, car les marqueurs ne sont pas compatibles avec des valeurs hexadécimales. ça change simplement le visuel, rien d'autres
             folium.CircleMarker(
                 location=[info["latitude"], info["longitude"]],
-                radius=8,  # Taille du marqueur
-                color=couleur,  # Bordure du marqueur
+                radius=8,
+                color=couleur,
                 fill=True,
-                fill_color=couleur,  # Remplissage
+                fill_color=couleur,
                 fill_opacity=0.8,
                 popup=folium.Popup(info["popup_content"], max_width=300)
             ).add_to(self.m)
@@ -353,20 +386,11 @@ class CarteMondiale(QMainWindow):
             if station in couleur_par_station:
                 self.markers[station]["couleur"] = couleur
 
-        # Sauvegarder la carte et la mettre à jour dans l'interface
+
         self.m.save(self.carte_path)
         self.browser.setUrl(QUrl.fromLocalFile(self.carte_path))
 
 
-
-
-    @property
-    def controleur(self):
-        return self._controleur
-
-    @controleur.setter
-    def controleur(self, value):
-        self._controleur = value
 
 
 

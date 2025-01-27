@@ -1,4 +1,4 @@
-Nom complet               Longitude        Latitude Abreviation
+Nom complet               Longitude        Latitude Abréviation
 AJACCIO                    8.762444       41.927472 AJAB       
 AMSTERDAM                 77.571361      -37.798583 AMVB       
 AREQUIPA                    -71.493      -16.465778 ARFB       
@@ -98,4 +98,5 @@ WALLIS                  -176.179472       -13.26575 WALA
 WETTZELL                      12.88          49.145 WEUC       
 YARRAGADEE                115.34675      -29.046167 YASB       
 YELLOWKNIFE             -114.479861       62.481111 YEMB       
-YUZHNO-SAKHALINSK        142.716778       47.029694 SAKB       
+YUZHNO-SAKHALINSK        142.716778       47.029694 SAKB
+EVEREST                   86.813139       27.958139 EVEB                          

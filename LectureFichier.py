@@ -1,3 +1,10 @@
+## ------------------------------------------------------------------------------
+# Auteur : Vanessa Monnier
+# Date de création : 26 Janvier 2025
+# Description : Ce fichier permet de lire le jeu de donnée d'entrée
+##------------------------------------------------------------------------------
+
+
 import pandas as pd
 import os
 
