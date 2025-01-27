@@ -45,5 +45,3 @@ python Runclasse.py
 
 Développé par Vanessa Monnier  
 Date de début du projet : novembre 2024
-
-```
